@@ -4,10 +4,11 @@ from wtforms import Form,StringField, EmailField, IntegerField, validators
 
 
 class UserForm( Form ):
+
+    id = IntegerField('id',[validators.number_range(min=1, max=20, message='valor requerido')])
     nombre = StringField('nombre',[validators.DataRequired(message="EL campo es requerido"),validators.length(min=4,max=10,message="Ingresa nombre valido")])
     email = EmailField('email',[validators.Email(message="Ingresa un correo valido")])
-    primerA = StringField('primerA')
-    edad = IntegerField('edad')
+    ape_paterno = StringField('primerA')
 
 
 class archivoForm(Form):

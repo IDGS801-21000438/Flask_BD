@@ -4,6 +4,8 @@ from flask_wtf.csrf import CSRFProtect
 from config import DevelopmentConfig
 import forms 
 
+from models import db, Alumnos
+
 app = Flask (__name__)
 app.config.from_object(DevelopmentConfig)
 csrf = CSRFProtect()
@@ -23,9 +25,18 @@ def after_reques(response):
     return response
 
 
-@app.route("/")
+@app.route("/index")
 def index():
-    return render_template("index.html")
+    create_form = forms.UserForm(request.form)
+    if request.method == 'POST':
+        alum = Alumnos(nombre = create_form.nombre.data,
+                       ape_paterno = create_form.ape_paterno.data,
+                       email = create_form.email.data)
+        
+        db.session.add(alum)
+        db.session.commit()
+    return render_template("index.html", form = create_form)
+
 
 
 @app.route("/archivo", methods=['GET', 'POST'])
@@ -143,4 +154,8 @@ def resultado():
 
 if __name__ =="__main__":
     csrf.init_app(app)
+    db.init_app(app)
+
+    with app.app_context():
+        db.create_all()
     app.run()
